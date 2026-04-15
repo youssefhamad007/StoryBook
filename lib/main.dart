@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,10 +22,13 @@ void main() async {
     ),
   );
 
+  // ── Environment Variables ──────────────────────────────────────────────
+  await dotenv.load(fileName: ".env");
+
   // ── Supabase ───────────────────────────────────────────────────────────
   await Supabase.initialize(
-    url: 'YOUR_SUPABASE_URL',
-    anonKey: 'YOUR_SUPABASE_ANON_KEY',
+    url: dotenv.get('SUPABASE_URL'),
+    anonKey: dotenv.get('SUPABASE_ANON_KEY'),
   );
 
   // ── Local Database (Drift) ─────────────────────────────────────────────

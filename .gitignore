@@ -46,3 +46,6 @@ app.*.map.json
 
 CLAUDE.md
 QWEN.md
+
+# Environment variables
+.env
