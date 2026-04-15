@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   HapticFeedback.selectionClick();
                   onToggle(v);
                 },
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
               )
             else if (onTap != null)
               const Icon(Icons.chevron_right_rounded,
