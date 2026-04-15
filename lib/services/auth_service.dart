@@ -58,7 +58,7 @@ class SupabaseAuthService {
       throw AuthServiceException('Sign-up failed: ${e.message}');
     } catch (e) {
       log('SignUp unexpected error: $e', name: 'SupabaseAuthService');
-      throw AuthServiceException(
+      throw const AuthServiceException(
         'An unexpected error occurred during sign-up. Please try again.',
       );
     }
@@ -85,7 +85,7 @@ class SupabaseAuthService {
       throw AuthServiceException('Sign-in failed: ${e.message}');
     } catch (e) {
       log('SignIn unexpected error: $e', name: 'SupabaseAuthService');
-      throw AuthServiceException(
+      throw const AuthServiceException(
         'An unexpected error occurred during sign-in. Please try again.',
       );
     }
@@ -114,7 +114,7 @@ class SupabaseAuthService {
       throw AuthServiceException('Google sign-in failed: ${e.message}');
     } catch (e) {
       log('Google sign-in unexpected error: $e', name: 'SupabaseAuthService');
-      throw AuthServiceException(
+      throw const AuthServiceException(
         'An unexpected error occurred during Google sign-in. Please try again.',
       );
     }
@@ -135,7 +135,7 @@ class SupabaseAuthService {
       throw AuthServiceException('Sign-out failed: ${e.message}');
     } catch (e) {
       log('SignOut unexpected error: $e', name: 'SupabaseAuthService');
-      throw AuthServiceException(
+      throw const AuthServiceException(
         'An unexpected error occurred during sign-out. Please try again.',
       );
     }

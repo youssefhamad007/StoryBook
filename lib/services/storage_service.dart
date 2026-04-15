@@ -85,7 +85,7 @@ class SupabaseStorageService {
         'Profile picture upload unexpected error: $e',
         name: 'SupabaseStorageService',
       );
-      throw StorageServiceException(
+      throw const StorageServiceException(
         'An unexpected error occurred while uploading your profile picture. '
         'Please try again.',
       );
@@ -141,7 +141,7 @@ class SupabaseStorageService {
         'Story cover upload unexpected error: $e',
         name: 'SupabaseStorageService',
       );
-      throw StorageServiceException(
+      throw const StorageServiceException(
         'An unexpected error occurred while uploading the story cover. '
         'Please try again.',
       );
@@ -198,7 +198,7 @@ class SupabaseStorageService {
         'Story page image upload unexpected error: $e',
         name: 'SupabaseStorageService',
       );
-      throw StorageServiceException(
+      throw const StorageServiceException(
         'An unexpected error occurred while uploading the page image. '
         'Please try again.',
       );

@@ -60,7 +60,7 @@ class SyncEngineService {
 
     if (pendingRecords.isEmpty) {
       log('No pending actions to sync.', name: 'SyncEngine');
-      return SyncResult(total: 0, synced: 0, failed: 0);
+      return const SyncResult(total: 0, synced: 0, failed: 0);
     }
 
     log(
