@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,8 +15,6 @@ import 'services/sync_engine_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // ── System UI ──────────────────────────────────────────────────────────
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -23,31 +23,30 @@ void main() async {
     ),
   );
 
-  // ── Environment Variables ──────────────────────────────────────────────
-  await dotenv.load(fileName: ".env");
+  // ── Load environment variables ──────────────────────────────────────────
+  await dotenv.load(fileName: '.env');
 
-  // ── Supabase ───────────────────────────────────────────────────────────
+  // ── Initialize Supabase ─────────────────────────────────────────────────
   await Supabase.initialize(
-    url: dotenv.get('SUPABASE_URL'),
-    anonKey: dotenv.get('SUPABASE_ANON_KEY'),
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+  log('Supabase initialized successfully.', name: 'Main');
 
-  // ── Local Database (Drift) ─────────────────────────────────────────────
+  // ── Initialize local database & sync engine ─────────────────────────────
   final appDatabase = AppDatabase();
-
-  // ── Sync Engine ────────────────────────────────────────────────────────
-  final syncEngineService = SyncEngineService(
+  final syncEngine = SyncEngineService(
     db: appDatabase,
     supabase: Supabase.instance.client,
   );
 
-  // ── Connectivity Listener ──────────────────────────────────────────────
-  final connectivitySyncService = ConnectivitySyncService(
-    syncEngineService: syncEngineService,
+  // ── Start connectivity listener (auto-sync on reconnect) ────────────────
+  final connectivitySync = ConnectivitySyncService(
+    syncEngineService: syncEngine,
   );
-  connectivitySyncService.startListening();
+  connectivitySync.startListening();
 
-  // ── Launch App ─────────────────────────────────────────────────────────
+  // ── Run the app ─────────────────────────────────────────────────────────
   runApp(
     MultiProvider(
       providers: [
