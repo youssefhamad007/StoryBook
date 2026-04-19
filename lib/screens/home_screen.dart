@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 // تأكد إن المسار واسم الـ Provider مطابق للي زميلك عمله
 import '../providers/stories_provider.dart'; 
@@ -20,10 +21,6 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _bounceController;
   late Animation<double> _bounceAnim;
-
-  // بيانات مستخدم وهمية (Mock Data)
-  final String userName = "Youssef Hamad";
-  final String userAvatarUrl = "https://ui-avatars.com/api/?name=Youssef+Hamad&background=0D8ABC&color=fff";
 
   @override
   void initState() {
@@ -45,9 +42,22 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    // قراءة البيانات من الـ Provider
+    // 1. قراءة القصص (زي ما هي)
     final stories = context.watch<StoriesProvider>().stories;
     final favoriteCount = stories.where((s) => s.isFavorite).length;
+
+    // 2. قراءة بيانات المستخدم الحقيقية من الـ AuthProvider (الجديد)
+    final authProvider = context.watch<AuthProvider>();
+    final currentUser = authProvider.user;
+
+    // 3. استخراج الاسم (لو ملوش اسم مسجل، بناخد أول جزء من الإيميل، ولو مفيش نكتب Guest)
+    final String userName = currentUser?.userMetadata?['name'] ?? 
+                            currentUser?.email?.split('@')[0] ?? 
+                            "Guest";
+
+    // 4. استخراج الصورة (لو ملوش صورة، بنعمله صورة ديناميكية بأول حرف من اسمه زي ما كنا عاملين)
+    final String userAvatarUrl = currentUser?.userMetadata?['avatar_url'] ?? 
+                                "https://ui-avatars.com/api/?name=${userName.replaceAll(' ', '+')}&background=0D8ABC&color=fff";
 
     return Scaffold(
       body: GradientBackground(

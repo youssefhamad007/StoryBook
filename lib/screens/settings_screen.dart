@@ -39,8 +39,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: (iconColor ?? AppColors.primary).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon,
-                  size: 18, color: iconColor ?? AppColors.primary),
+              child:
+                  Icon(icon, size: 18, color: iconColor ?? AppColors.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   HapticFeedback.selectionClick();
                   onToggle(v);
                 },
-                activeColor: AppColors.primary,
+                activeTrackColor: AppColors.primary,
               )
             else if (onTap != null)
               const Icon(Icons.chevron_right_rounded,
@@ -158,8 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: const Center(
-                              child: Text('📚',
-                                  style: TextStyle(fontSize: 30)),
+                              child: Text('📚', style: TextStyle(fontSize: 30)),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -197,8 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: 'Sound Effects',
                         subtitle: 'Enable sounds when tapping',
                         value: _soundEnabled,
-                        onToggle: (v) =>
-                            setState(() => _soundEnabled = v),
+                        onToggle: (v) => setState(() => _soundEnabled = v),
                       ),
                       const Divider(
                           height: 1, color: AppColors.border, indent: 64),
@@ -207,8 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: 'Animations',
                         subtitle: 'Enable animated transitions',
                         value: _animationsEnabled,
-                        onToggle: (v) =>
-                            setState(() => _animationsEnabled = v),
+                        onToggle: (v) => setState(() => _animationsEnabled = v),
                       ),
                     ]),
 
@@ -221,8 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: Icons.menu_book_rounded,
                         title: 'My Stories',
                         subtitle: '${stories.length} total stories',
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/stories'),
+                        onTap: () => Navigator.pushNamed(context, '/stories'),
                       ),
                       const Divider(
                           height: 1, color: AppColors.border, indent: 64),
