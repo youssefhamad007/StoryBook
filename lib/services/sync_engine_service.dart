@@ -155,17 +155,20 @@ class SyncEngineService {
 
   /// Routes a queued action to the correct Supabase table operation.
   ///
-  /// Add new cases here as more features are built.
+  /// Payloads from the Flutter model use camelCase keys (e.g. `coverColor`).
+  /// The mapping helpers below convert them to the snake_case column names
+  /// expected by the Supabase schema.
   Future<void> _dispatch(String actionType, Map<String, dynamic> data) async {
     switch (actionType) {
       // ── Stories ──────────────────────────────────────────────────────
       case 'CREATE_STORY':
-        await _supabase.from('stories').insert(data);
+        await _supabase.from('stories').insert(_toStoryRow(data));
         break;
 
       case 'UPDATE_STORY':
-        final storyId = data.remove('id') as String;
-        await _supabase.from('stories').update(data).eq('id', storyId);
+        final row = _toStoryRow(data);
+        final storyId = row.remove('id') as String;
+        await _supabase.from('stories').update(row).eq('id', storyId);
         break;
 
       case 'DELETE_STORY':
@@ -175,12 +178,13 @@ class SyncEngineService {
 
       // ── Story Pages ─────────────────────────────────────────────────
       case 'CREATE_STORY_PAGE':
-        await _supabase.from('story_pages').insert(data);
+        await _supabase.from('story_pages').insert(_toPageRow(data));
         break;
 
       case 'UPDATE_STORY_PAGE':
-        final pageId = data.remove('id') as String;
-        await _supabase.from('story_pages').update(data).eq('id', pageId);
+        final row = _toPageRow(data);
+        final pageId = row.remove('id') as String;
+        await _supabase.from('story_pages').update(row).eq('id', pageId);
         break;
 
       case 'DELETE_STORY_PAGE':
@@ -218,6 +222,55 @@ class SyncEngineService {
           'Please add a handler in SyncEngineService._dispatch().',
         );
     }
+  }
+
+  // -------------------------------------------------------------------------
+  // Key-Mapping Helpers (camelCase → snake_case)
+  // -------------------------------------------------------------------------
+
+  /// Converts a Flutter [Story.toJson()] map into a Supabase `stories` row.
+  ///
+  /// - Maps camelCase keys → snake_case columns.
+  /// - Strips the embedded `pages` list (pages are a separate table).
+  /// - Strips `isFavorite` (managed via the `favorites` join table).
+  Map<String, dynamic> _toStoryRow(Map<String, dynamic> data) {
+    return {
+      if (data.containsKey('id')) 'id': data['id'],
+      if (data.containsKey('title')) 'title': data['title'],
+      if (data.containsKey('coverColor')) 'cover_color': data['coverColor'],
+      if (data.containsKey('coverEmoji')) 'cover_emoji': data['coverEmoji'],
+      if (data.containsKey('createdAt')) 'created_at': data['createdAt'],
+      if (data.containsKey('updatedAt')) 'updated_at': data['updatedAt'],
+      // Pass through any keys already in snake_case (e.g. author_id).
+      if (data.containsKey('author_id')) 'author_id': data['author_id'],
+      if (data.containsKey('description')) 'description': data['description'],
+      if (data.containsKey('cover_image_url'))
+        'cover_image_url': data['cover_image_url'],
+      if (data.containsKey('is_published'))
+        'is_published': data['is_published'],
+    };
+  }
+
+  /// Converts a Flutter [StoryPage.toJson()] map into a Supabase
+  /// `story_pages` row.
+  ///
+  /// - Maps `text` → `text_content`.
+  /// - Maps `imageDescription` → `image_description`.
+  /// - Maps `backgroundColor` → `background_color`.
+  Map<String, dynamic> _toPageRow(Map<String, dynamic> data) {
+    return {
+      if (data.containsKey('id')) 'id': data['id'],
+      if (data.containsKey('text')) 'text_content': data['text'],
+      if (data.containsKey('imageDescription'))
+        'image_description': data['imageDescription'],
+      if (data.containsKey('backgroundColor'))
+        'background_color': data['backgroundColor'],
+      // Pass through any keys already in snake_case.
+      if (data.containsKey('story_id')) 'story_id': data['story_id'],
+      if (data.containsKey('page_number'))
+        'page_number': data['page_number'],
+      if (data.containsKey('image_url')) 'image_url': data['image_url'],
+    };
   }
 
   // -------------------------------------------------------------------------
